@@ -1,0 +1,241 @@
+absl-py==2.3.0
+aiofiles==24.1.0
+aiohappyeyeballs==2.6.1
+aiohttp==3.12.13
+aiosignal==1.4.0
+alembic==1.16.1
+annotated-types==0.7.0
+antlr4-python3-runtime==4.9.3
+anyio==4.9.0
+astor==0.8.1
+astroid==3.3.10
+attrs==25.3.0
+beautifulsoup4==4.13.4
+black==25.1.0
+blinker==1.9.0
+Brotli @ file:///home/conda/feedstock_root/build_artifacts/brotli-split_1725267488082/work
+cachetools==5.5.2
+certifi @ file:///home/conda/feedstock_root/build_artifacts/certifi_1746569525376/work/certifi
+cffi @ file:///home/conda/feedstock_root/build_artifacts/cffi_1725560558132/work
+cfgv==3.4.0
+charset-normalizer @ file:///home/conda/feedstock_root/build_artifacts/charset-normalizer_1746214863626/work
+clearml==2.0.0
+click==8.2.1
+cloudpickle==3.1.1
+colorama @ file:///home/conda/feedstock_root/build_artifacts/colorama_1733218098505/work
+colorlog==6.9.0
+contourpy==1.3.2
+crc32c==2.7.1
+cryptography==45.0.5
+cucim==22.8.1
+cycler==0.12.1
+databricks-sdk==0.56.0
+Deprecated==1.2.18
+dill==0.4.0
+distlib==0.3.9
+docker==7.1.0
+donfig==0.8.1.post1
+einops==0.8.1
+fastapi==0.115.12
+-e git+https://github.com/mhamilton723/FeatUp@6b5a6c0e91f75e69194807128dcbc39c3084a30d#egg=featup
+ffmpy==0.6.0
+filelock==3.18.0
+fire==0.7.0
+flake8==7.3.0
+flake8-bugbear==24.12.12
+flake8-comprehensions==3.16.0
+flake8-executable==2.1.3
+Flask==3.1.1
+fonttools==4.58.0
+frozenlist==1.7.0
+fsspec==2025.3.2
+furl==2.1.4
+gdown==5.2.0
+gitdb==4.0.12
+GitPython==3.1.44
+gmpy2 @ file:///home/conda/feedstock_root/build_artifacts/gmpy2_1745509370291/work
+google-auth==2.40.3
+gradio==5.36.2
+gradio_client==1.10.4
+graphene==3.4.3
+graphql-core==3.2.6
+graphql-relay==3.2.0
+greenlet==3.2.3
+groovy==0.1.2
+grpcio==1.72.1
+gunicorn==23.0.0
+h11==0.16.0
+h2 @ file:///home/conda/feedstock_root/build_artifacts/h2_1738578511449/work
+h5py==3.14.0
+hf-xet==1.1.3
+hpack @ file:///home/conda/feedstock_root/build_artifacts/hpack_1737618293087/work
+httpcore==1.0.9
+httpx==0.28.1
+huggingface-hub==0.32.4
+hydra-core==1.3.2
+hyperframe @ file:///home/conda/feedstock_root/build_artifacts/hyperframe_1737618333194/work
+identify==2.6.12
+idna @ file:///home/conda/feedstock_root/build_artifacts/idna_1733211830134/work
+imagecodecs==2025.3.30
+imageio==2.37.0
+immutabledict==4.2.1
+importlab==0.8.1
+importlib_metadata==8.7.0
+iopath==0.1.10
+isort==6.0.1
+itk==5.4.3
+itk-core==5.4.3
+itk-filtering==5.4.3
+itk-io==5.4.3
+itk-numerics==5.4.3
+itk-registration==5.4.3
+itk-segmentation==5.4.3
+itsdangerous==2.2.0
+Jinja2 @ file:///home/conda/feedstock_root/build_artifacts/jinja2_1741263328855/work
+joblib==1.5.1
+json-tricks==3.17.3
+jsonschema==4.24.0
+jsonschema-specifications==2025.4.1
+kiwisolver==1.4.8
+kornia==0.8.1
+kornia_rs==0.1.9
+lazy_loader==0.4
+libcst==1.8.2
+lightning-utilities==0.14.3
+lmdb==1.6.2
+lpips==0.1.4
+Mako==1.3.10
+Markdown==3.8
+markdown-it-py==3.0.0
+MarkupSafe @ file:///home/conda/feedstock_root/build_artifacts/markupsafe_1733219680183/work
+matplotlib==3.10.3
+mccabe==0.7.0
+mdurl==0.1.2
+mlflow==2.22.1
+mlflow-skinny==2.22.1
+monai==1.5.0
+mpmath @ file:///home/conda/feedstock_root/build_artifacts/mpmath_1733302684489/work
+msgspec==0.19.0
+multidict==6.6.3
+mypy==1.16.1
+mypy_extensions==1.1.0
+natsort==8.4.0
+networkx @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_networkx_1731521053/work
+nibabel==5.3.2
+ninja==1.11.1.4
+nni==3.0
+nodeenv==1.9.1
+numcodecs==0.16.1
+numpy==1.26.4
+nvidia-ml-py==12.575.51
+omegaconf==2.3.0
+onnx==1.18.0
+opencv-python==4.11.0.86
+openslide-python==1.4.2
+opentelemetry-api==1.34.0
+opentelemetry-sdk==1.34.0
+opentelemetry-semantic-conventions==0.55b0
+optuna==4.3.0
+orderedmultidict==1.0.1
+orjson==3.10.18
+packaging==24.2
+pandas==2.2.3
+parameterized==0.9.0
+pathlib2==2.3.7.post1
+pathspec==0.12.1
+pep8-naming==0.15.1
+pillow @ file:///home/conda/feedstock_root/build_artifacts/pillow_1726075084513/work
+platformdirs==4.3.8
+portalocker==3.1.1
+pre_commit==4.2.0
+prettytable==3.16.0
+propcache==0.3.2
+protobuf==6.31.1
+psutil==7.0.0
+pyamg==5.2.1
+pyarrow==19.0.1
+pyasn1==0.6.1
+pyasn1_modules==0.4.2
+pycnite==2024.7.31
+pycodestyle==2.14.0
+pycparser @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_pycparser_1733195786/work
+pydantic==2.11.5
+pydantic_core==2.33.2
+pydicom==3.0.1
+pydot==4.0.1
+pydub==0.25.1
+pyflakes==3.4.0
+PyGithub==2.6.1
+Pygments==2.19.2
+PyJWT==2.10.1
+pylint==3.3.7
+PyNaCl==1.5.0
+pynrrd==1.1.3
+pyparsing==3.2.3
+pyplastimatch==0.4.6
+PySocks @ file:///home/conda/feedstock_root/build_artifacts/pysocks_1733217236728/work
+python-dateutil==2.9.0.post0
+python-multipart==0.0.20
+PythonWebHDFS==0.2.3
+pytorch-ignite==0.4.11
+pytorch-lightning==2.5.2
+pytype==2024.10.11
+pytz==2025.2
+PyYAML @ file:///home/conda/feedstock_root/build_artifacts/pyyaml_1737454647378/work
+referencing==0.36.2
+requests @ file:///home/conda/feedstock_root/build_artifacts/requests_1733217035951/work
+responses==0.25.7
+rich==14.0.0
+rpds-py==0.25.1
+rsa==4.9.1
+ruff==0.12.2
+safehttpx==0.1.6
+schema==0.7.7
+scikit-image==0.25.2
+scikit-learn==1.6.1
+scipy==1.15.3
+semantic-version==2.10.0
+setuptools==78.1.1
+shellingham==1.5.4
+SimpleITK @ file:///home/conda/feedstock_root/build_artifacts/simpleitk_1725378968234/work/build
+simplejson==3.20.1
+six==1.17.0
+smmap==5.0.2
+sniffio==1.3.1
+soupsieve==2.7
+SQLAlchemy==2.0.41
+sqlparse==0.5.3
+starlette==0.46.2
+sympy==1.13.1
+tabulate==0.9.0
+tensorboard==2.19.0
+tensorboard-data-server==0.7.2
+tensorboardX==2.6.2.2
+termcolor==3.1.0
+threadpoolctl==3.6.0
+tifffile==2025.5.10
+timm==0.4.12
+toml==0.10.2
+tomlkit==0.13.3
+torch==2.5.1
+torchmetrics==1.7.4
+torchvision==0.20.1
+tqdm @ file:///home/conda/feedstock_root/build_artifacts/tqdm_1722737464726/work
+triton==3.1.0
+typeguard==4.1.2
+typer==0.16.0
+typing-inspection==0.4.1
+typing_extensions @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_typing_extensions_1744302253/work
+tzdata==2025.2
+urllib3 @ file:///home/conda/feedstock_root/build_artifacts/urllib3_1744323578849/work
+uvicorn==0.34.3
+virtualenv==20.31.2
+wcwidth==0.2.13
+websockets==15.0.1
+Werkzeug==3.1.3
+wheel==0.45.1
+wrapt==1.17.2
+yarl==1.20.1
+zarr==3.0.8
+zipp==3.22.0
+zstandard==0.23.0
