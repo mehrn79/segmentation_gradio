@@ -8,9 +8,17 @@ from PIL import Image
 import io
 import json
 
+
+from api_service.schemas.annotation_segment_docs import ANNOTATE_SEGMENT_DESCRIPTION
+from api_service.schemas.segment_docs import SEGMENT_ENDPOINT_DESCRIPTION
+
 router = APIRouter()
 
-@router.post("/segment")
+@router.post(
+    "/segment",
+    summary="Segmentation Endpoint",
+    description=SEGMENT_ENDPOINT_DESCRIPTION
+)
 def segmentation_endpoint(file: UploadFile = File(...)):
     temp_path = Path("/tmp/uploads")
     temp_path.mkdir(parents=True, exist_ok=True)
@@ -27,7 +35,10 @@ def segmentation_endpoint(file: UploadFile = File(...)):
 
 
 
-@router.post("/annotate-segment")
+@router.post("/annotate-segment",
+    summary="Annotation-based Segmentation with MedSAM2",
+    description=ANNOTATE_SEGMENT_DESCRIPTION
+)
 def annotation_segmentation_endpoint(
     file: UploadFile = File(...),
     image: UploadFile = File(None),
