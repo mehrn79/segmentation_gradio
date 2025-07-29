@@ -21,29 +21,44 @@ def create_overlay_image(ct_slice_path: str, selected_organs: list, patient_id: 
 
     overlay = cv2.cvtColor(ct_img, cv2.COLOR_GRAY2BGR)
 
-    if not selected_organs or not patient_id or not session_path_str:
+    if not patient_id or not session_path_str:
         return overlay
 
     session_path = Path(session_path_str)
-    png_masks_dir = session_path / "organ_masks"
 
-    for organ in selected_organs:
-        mask_path = png_masks_dir / patient_id / \
-            organ / f'slice_{slice_idx:03d}_OUT.png'
+    # ➤ MONAI organ masks
+    organ_mask_dir = session_path / "organ_masks"
+    for organ in selected_organs or []:
+        mask_path = organ_mask_dir / patient_id / organ / f'slice_{slice_idx:03d}_OUT.png'
         if not mask_path.exists():
             continue
 
         mask = cv2.imread(str(mask_path), cv2.IMREAD_GRAYSCALE)
         if mask is None:
-            logging.warning(f"Failed to load mask: {mask_path}")
             continue
 
-        color = AppConfig.ORGAN_COLORS.get(organ, (255, 255, 255))
         mask_bool = mask > 0
-
+        color = AppConfig.ORGAN_COLORS.get(organ, (255, 255, 255))
         colored_mask = np.zeros_like(overlay)
         colored_mask[mask_bool] = color
+
         overlay[mask_bool] = cv2.addWeighted(
-            overlay[mask_bool], 0.5, colored_mask[mask_bool], 0.5, 0)
+            overlay[mask_bool], 0.5,
+            colored_mask[mask_bool], 0.5, 0
+        )
+
+    # ➤ MedSAM2 predicted masks
+    pred_mask_path = session_path / "medsam2_outputs" / "png_masks" / f"slice_{slice_idx:03d}_pred.png"
+    if pred_mask_path.exists():
+        pred_mask = cv2.imread(str(pred_mask_path), cv2.IMREAD_GRAYSCALE)
+        if pred_mask is not None:
+            pred_bool = pred_mask > 0
+            color = (0, 0, 255)  # 🔵 MedSAM2 mask color: Blue
+            medsam_mask = np.zeros_like(overlay)
+            medsam_mask[pred_bool] = color
+            overlay[pred_bool] = cv2.addWeighted(
+                overlay[pred_bool], 0.5,
+                medsam_mask[pred_bool], 0.5, 0
+            )
 
     return overlay

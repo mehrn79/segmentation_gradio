@@ -2,13 +2,13 @@ import logging
 from pathlib import Path
 import shutil
 import datetime
-import cv2
 import nibabel as nib
 import numpy as np
 import pydicom
 from pydicom.dataset import FileDataset
 from pydicom.uid import generate_uid
 from natsort import natsorted
+import cv2
 
 from configs.app_config import AppConfig
 from utils.image import apply_ct_window
@@ -93,9 +93,8 @@ def prepare_nifti_slices(nifti_path: Path, output_dir: Path) -> tuple[list[str],
     return natsorted(slice_files), num_slices
 
 
-def create_png_masks_from_nifti(nifti_seg_dir: Path, target_organs: list, output_dir: Path):
-    patient_folders = natsorted(
-        [p for p in nifti_seg_dir.iterdir() if p.is_dir()])
+def create_png_masks_from_nifti(nifti_seg_dir: Path, output_dir: Path):
+    patient_folders = natsorted([p for p in nifti_seg_dir.iterdir() if p.is_dir()])
 
     for patient_dir in patient_folders:
         patient_id = patient_dir.name
@@ -109,29 +108,34 @@ def create_png_masks_from_nifti(nifti_seg_dir: Path, target_organs: list, output
         nii = nib.load(nii_path)
         label_data = nii.get_fdata()
 
+        # Handle orientation (flip if necessary)
         if nii.affine[0, 0] > 0:
             label_data = np.flip(label_data, axis=0)
         if nii.affine[1, 1] > 0:
             label_data = np.flip(label_data, axis=1)
 
+        # Transpose to (slice, height, width)
         label_data = np.transpose(label_data, (2, 0, 1))
 
-        for organ_name in target_organs:
+        # شناسایی ارگان‌های موجود در segmentation
+        unique_labels = np.unique(label_data).astype(int)
+        unique_labels = unique_labels[unique_labels > 0]  # حذف background (0)
+
+        for organ_index in unique_labels:
             try:
-                organ_index = AppConfig.ALL_ORGANS.index(organ_name)
-            except ValueError:
-                logging.warning(
-                    f"Organ '{organ_name}' not in master list. Skipping.")
+                organ_name = AppConfig.ALL_ORGANS[organ_index]
+            except IndexError:
+                logging.warning(f"Organ index {organ_index} خارج از محدوده‌ی لیست ارگان‌هاست.")
                 continue
 
             patient_organ_dir = output_dir / patient_id / organ_name
             patient_organ_dir.mkdir(parents=True, exist_ok=True)
 
             for i, slice_label in enumerate(label_data):
-                binary_mask = (slice_label == organ_index).astype(
-                    np.uint8) * 255
-                mask_path = patient_organ_dir / f'slice_{i:03d}_OUT.png'
+                binary_mask = (slice_label == organ_index).astype(np.uint8) * 255
+                mask_path = patient_organ_dir / f"slice_{i:03d}_OUT.png"
                 cv2.imwrite(str(mask_path), binary_mask)
 
         logging.info(f"Finished generating masks for patient: {patient_id}")
-    logging.info("All PNG masks have been generated.")
+
+    logging.info("✅ All PNG masks have been generated.")

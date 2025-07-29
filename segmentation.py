@@ -1,6 +1,8 @@
 import logging
 from pathlib import Path
 from monai.bundle import ConfigParser
+import base64
+from typing import Dict
 
 from configs.app_config import AppConfig
 from utils.nifti import convert_nifti_to_dicom, create_png_masks_from_nifti
@@ -50,18 +52,15 @@ def execute_monai_segmentation(config_path: Path):
     logging.info("MONAI evaluation complete.")
 
 
-def segment(nii_path: Path, selected_organs: list, session_path: Path) -> str:
-    session_dicom_dir, seg_output_dir, png_masks_dir = setup_session_directories(
-        session_path)
+def segment(nii_path: Path, session_path: Path) -> Path:
+    session_dicom_dir, seg_output_dir, png_masks_dir = setup_session_directories(session_path)
 
-    convert_nifti_to_dicom(nii_path, session_dicom_dir)
+    if not any(session_dicom_dir.glob("*.dcm")):
+        convert_nifti_to_dicom(nii_path, session_dicom_dir)
 
-    temp_monai_config = generate_monai_config(
-        nii_path, session_path, seg_output_dir)
-
+    temp_monai_config = generate_monai_config(nii_path, session_path, seg_output_dir)
     execute_monai_segmentation(temp_monai_config)
 
-    create_png_masks_from_nifti(
-        seg_output_dir, selected_organs, png_masks_dir)
+    create_png_masks_from_nifti(seg_output_dir, png_masks_dir)
 
-    return f"✅ Segmentation complete for: {', '.join(selected_organs)}"
+    return png_masks_dir  
