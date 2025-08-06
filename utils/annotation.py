@@ -1,10 +1,7 @@
-import json
-import cv2
-import numpy as np
 from pathlib import Path
 import subprocess
-from PIL import Image
 import subprocess
+from configs.app_config import AppConfig
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 
@@ -30,7 +27,9 @@ def run_medsam2_prediction(ct_path, slice_idx, session_path_str, patient_id, too
             "--ct_path", str(ct_path),
             "--key_slice_idx", str(slice_idx),
             "--box", *box_str.split(),
-            "--save_path", str(output_mask_path)
+            "--save_path", str(output_mask_path),
+            "--checkpoint", str(AppConfig.MEDSAM_CHECKPOINT_PATH),
+            "--cfg", str(AppConfig.MEDSAM_CONFIG_PATH)
         ]
 
     elif tool == "Brush":
@@ -39,7 +38,9 @@ def run_medsam2_prediction(ct_path, slice_idx, session_path_str, patient_id, too
             "--ct_path", str(ct_path),
             "--key_slice_idx", str(slice_idx),
             "--mask_path", str(annotation_path),
-            "--save_path", str(output_mask_path)
+            "--save_path", str(output_mask_path),
+            "--checkpoint", str(AppConfig.MEDSAM_CHECKPOINT_PATH),
+            "--cfg", str(AppConfig.MEDSAM_CONFIG_PATH)
         ]
 
     else:

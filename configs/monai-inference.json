@@ -86,7 +86,7 @@
     "handlers": [
       {
         "_target_": "CheckpointLoader",
-        "load_path": "$@bundle_root + '/models/' + @modelname",
+        "load_path": "$@bundle_root + '/checkpoints/' + @modelname",
         "load_dict": {
           "model": "@network"
         },

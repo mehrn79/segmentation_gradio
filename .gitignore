@@ -1,7 +1,8 @@
 venv
-models
-**/__pycache__
-temp
-output
+checkpoints/
+**/__pycache__/
+temp/
+static/
+output/
+uploads/
 .env
-MedSAM2

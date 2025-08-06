@@ -24,3 +24,15 @@ def load_masks_as_base64(mask_root_dir: Path) -> Dict[str, Dict[str, Dict[str, s
                 except Exception as e:
                     logging.error(f"Error encoding {mask_file}: {e}")
     return output
+
+
+def load_flat_masks_as_base64(mask_dir: Path) -> dict[str, str]:
+    output: dict[str, str] = {}
+    for mask_file in mask_dir.glob("*.png"):
+        try:
+            with open(mask_file, "rb") as f:
+                encoded = base64.b64encode(f.read()).decode("utf-8")
+            output[mask_file.name] = f"data:image/png;base64,{encoded}"
+        except Exception as e:
+            logging.error(f"Error encoding {mask_file}: {e}")
+    return output

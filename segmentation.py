@@ -1,8 +1,6 @@
 import logging
 from pathlib import Path
 from monai.bundle import ConfigParser
-import base64
-from typing import Dict
 
 from configs.app_config import AppConfig
 from utils.nifti import convert_nifti_to_dicom, create_png_masks_from_nifti

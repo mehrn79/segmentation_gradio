@@ -11,7 +11,7 @@ import torch
 import SimpleITK as sitk
 from PIL import Image
 from pathlib import Path
-from sam2.build_sam import build_sam2_video_predictor_npz
+from MedSAM2.sam2.build_sam import build_sam2_video_predictor_npz
 import argparse
 from med_sam_masks import extract_slices_from_nifti_mask
 import cv2
