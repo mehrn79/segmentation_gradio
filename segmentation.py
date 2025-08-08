@@ -1,9 +1,10 @@
+import re
 import logging
 from pathlib import Path
 from monai.bundle import ConfigParser
 
 from configs.app_config import AppConfig
-from utils.nifti import convert_nifti_to_dicom, create_png_masks_from_nifti
+from utils.nifti import convert_nifti_to_dicom
 
 
 def setup_session_directories(session_path: Path) -> tuple[Path, Path, Path]:
@@ -51,14 +52,23 @@ def execute_monai_segmentation(config_path: Path):
 
 
 def segment(nii_path: Path, session_path: Path) -> Path:
-    session_dicom_dir, seg_output_dir, png_masks_dir = setup_session_directories(session_path)
+    patient_id = re.sub(r'\.nii(\.gz)?$', '', nii_path.name)
+    session_dicom_dir, seg_output_dir, png_masks_dir = setup_session_directories(
+        session_path)
 
     if not any(session_dicom_dir.glob("*.dcm")):
         convert_nifti_to_dicom(nii_path, session_dicom_dir)
 
-    temp_monai_config = generate_monai_config(nii_path, session_path, seg_output_dir)
+    temp_monai_config = generate_monai_config(
+        nii_path, session_path, seg_output_dir)
     execute_monai_segmentation(temp_monai_config)
 
-    create_png_masks_from_nifti(seg_output_dir, png_masks_dir)
+    expected = seg_output_dir / patient_id / f"{patient_id}_trans.nii.gz"
+    if not expected.exists():
+        trans_files = list(seg_output_dir.rglob("*_trans.nii.gz"))
+        if not trans_files:
+            raise FileNotFoundError(
+                f"Segmentation NIfTI not found under {seg_output_dir}")
+        expected = trans_files[0]
 
-    return png_masks_dir  
+    return expected

@@ -1,6 +1,6 @@
 import inspect
 
-from MedSAM2.sam2.build_sam import build_sam2_video_predictor_npz
+from sam2.build_sam import build_sam2_video_predictor_npz
 from configs.app_config import AppConfig
 
 

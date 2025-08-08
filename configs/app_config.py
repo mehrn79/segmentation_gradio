@@ -12,7 +12,6 @@ logging.basicConfig(level=logging.INFO,
 class AppConfig:
     MONAI_CONFIG_PATH = Path(os.getenv("MONAI_CONFIG_PATH"))
     BASE_OUTPUT_DIR = Path(os.getenv("BASE_OUTPUT_DIR", "./output"))
-    STATIC_MASKS_DIR = Path(os.getenv("STATIC_MASKS_DIR", "./static"))
     TEMP_UPLOAD_DIR = Path(os.getenv("TEMP_UPLOAD_DIR", "./uploads"))
     MEDSAM_CHECKPOINT_PATH = Path(os.getenv("MEDSAM_CHECKPOINT_PATH"))
     MEDSAM_CONFIG_PATH = Path(os.getenv("MEDSAM_CONFIG_PATH"))
@@ -64,5 +63,5 @@ class AppConfig:
 
     @classmethod
     def setup_directories(cls):
-        for path in [cls.BASE_OUTPUT_DIR, cls.TEMP_UPLOAD_DIR, cls.STATIC_MASKS_DIR]:
+        for path in [cls.BASE_OUTPUT_DIR, cls.TEMP_UPLOAD_DIR]:
             path.mkdir(parents=True, exist_ok=True)

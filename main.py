@@ -11,7 +11,4 @@ app = FastAPI(
 
 AppConfig.setup_directories()
 
-app.mount("/static-masks",
-          StaticFiles(directory=str(AppConfig.STATIC_MASKS_DIR)), name="static-masks")
-
 app.include_router(endpoints.router)

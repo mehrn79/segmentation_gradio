@@ -1,27 +1,22 @@
-import sys
-import os
+import matplotlib.patches as patches
+import matplotlib.pyplot as plt
+import cv2
+from med_sam_masks import extract_slices_from_nifti_mask
+import argparse
+from sam2.build_sam import build_sam2_video_predictor_npz
+from PIL import Image
+import SimpleITK as sitk
+import torch
+import numpy as np
 from pathlib import Path
-medsam2_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'MedSAM2'))
-sys.path.append(medsam2_path)
+import os
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 
-import numpy as np
-import torch
-import SimpleITK as sitk
-from PIL import Image
-from pathlib import Path
-from MedSAM2.sam2.build_sam import build_sam2_video_predictor_npz
-import argparse
-from med_sam_masks import extract_slices_from_nifti_mask
-import cv2
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-
 
 def apply_flip_and_rotation(slice_img):
-    slice_img = np.flipud(slice_img)              # flip vertically
-    slice_img = np.rot90(slice_img, k=-1)         # rotate 90 deg clockwise
+    slice_img = np.flipud(slice_img)
+    slice_img = np.rot90(slice_img, k=-1)
     return slice_img
 
 
@@ -71,16 +66,17 @@ def main():
     parser.add_argument('--key_slice_idx', type=int, required=True)
     parser.add_argument('--box', nargs=4, type=int)
     parser.add_argument('--mask_path')
-    parser.add_argument('--checkpoint', default=f'{BASE_DIR}/MedSAM2/checkpoints/MedSAM2_latest.pt')
+    parser.add_argument(
+        '--checkpoint', default=f'{BASE_DIR}/MedSAM2/checkpoints/MedSAM2_latest.pt')
     parser.add_argument('--cfg', default='configs/sam2.1_hiera_t512.yaml')
     args = parser.parse_args()
 
     nii_image = sitk.ReadImage(args.ct_path)
     volume = sitk.GetArrayFromImage(nii_image)
     volume = np.clip(volume, -1024, 1024)
-    volume = ((volume - np.min(volume)) / (np.max(volume) - np.min(volume)) * 255).astype(np.uint8)
+    volume = ((volume - np.min(volume)) / (np.max(volume) -
+              np.min(volume)) * 255).astype(np.uint8)
 
-    # تعیین باکس
     if args.box:
         box = np.array(args.box)
     elif args.mask_path:
@@ -90,29 +86,22 @@ def main():
             mask = np.array(Image.open(args.mask_path).convert('L')) > 0
         mask = mask.astype(np.uint8)
         if mask.shape != (512, 512):
-            mask = cv2.resize(mask, (512, 512), interpolation=cv2.INTER_NEAREST)
+            mask = cv2.resize(mask, (512, 512),
+                              interpolation=cv2.INTER_NEAREST)
         box = mask_to_box(mask)
     else:
-        raise ValueError("You must provide either a box or mask_path.")
+        raise ValueError("You must provide either --box or --mask_path.")
 
-    # تبدیل تصویر کلیدی (فقط برای باکس و نمایش)
-    key_slice_raw = volume[args.key_slice_idx]
-    key_slice_transformed = apply_flip_and_rotation(key_slice_raw)
-
-    # اعمال تبدیلات روی کل volume برای مدل
     resized_volume = preprocess_volume(volume, 512)
     resized_volume = resized_volume / 255.0
-    img_tensor = torch.from_numpy(resized_volume).float().cuda()
+    img_tensor = torch.from_numpy(resized_volume).float()
 
-    # نرمال‌سازی
-    img_mean = torch.tensor([0.485, 0.456, 0.406])[:, None, None].cuda()
-    img_std = torch.tensor([0.229, 0.224, 0.225])[:, None, None].cuda()
+    img_mean = torch.tensor([0.485, 0.456, 0.406])[:, None, None]
+    img_std = torch.tensor([0.229, 0.224, 0.225])[:, None, None]
     img_tensor = (img_tensor - img_mean) / img_std
 
-    # نمایش باکس روی اسلایس کلیدی
     save_box_on_image(img_tensor[args.key_slice_idx].cpu().numpy(), box)
 
-    # مدل
     predictor = build_sam2_video_predictor_npz(args.cfg, args.checkpoint)
 
     with torch.inference_mode(), torch.autocast("cuda", dtype=torch.bfloat16):
@@ -142,7 +131,6 @@ def main():
     png_output_dir.mkdir(parents=True, exist_ok=True)
 
     extract_slices_from_nifti_mask(str(output_mask_path), str(png_output_dir))
-   
 
     print(f"[✓] Extracted PNG slices to: {png_output_dir}")
 
