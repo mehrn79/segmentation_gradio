@@ -1,17 +1,15 @@
-import logging
-from pathlib import Path
-import shutil
-import datetime
-import nibabel as nib
-import numpy as np
-import pydicom
-from pydicom.dataset import FileDataset
-from pydicom.uid import generate_uid
-from natsort import natsorted
 import cv2
+from natsort import natsorted
+from pydicom.uid import generate_uid
+from pydicom.dataset import FileDataset
+import pydicom
+import numpy as np
+import nibabel as nib
+import datetime
+from pathlib import Path
+import logging
 
 from configs.app_config import AppConfig
-from utils.image import apply_ct_window
 
 
 def convert_nifti_to_dicom(nifti_path: Path, output_folder: Path):
@@ -70,31 +68,9 @@ def convert_nifti_to_dicom(nifti_path: Path, output_folder: Path):
     logging.info(f"DICOM series saved to: {dicom_subfolder}")
 
 
-def prepare_nifti_slices(nifti_path: Path, output_dir: Path) -> tuple[list[str], int]:
-    if not nifti_path.exists():
-        logging.error(f"NIfTI file not found: {nifti_path}")
-        return [], 0
-
-    if output_dir.exists():
-        shutil.rmtree(output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    img = nib.load(nifti_path)
-    data = img.get_fdata()
-    num_slices = data.shape[2]
-
-    slice_files = []
-    for i in range(num_slices):
-        slice_img_gray = apply_ct_window(data[:, :, i])
-        slice_path = output_dir / f"slice_{i:03d}.png"
-        cv2.imwrite(str(slice_path), slice_img_gray)
-        slice_files.append(str(slice_path))
-
-    return natsorted(slice_files), num_slices
-
-
 def create_png_masks_from_nifti(nifti_seg_dir: Path, output_dir: Path):
-    patient_folders = natsorted([p for p in nifti_seg_dir.iterdir() if p.is_dir()])
+    patient_folders = natsorted(
+        [p for p in nifti_seg_dir.iterdir() if p.is_dir()])
 
     for patient_dir in patient_folders:
         patient_id = patient_dir.name
@@ -117,22 +93,25 @@ def create_png_masks_from_nifti(nifti_seg_dir: Path, output_dir: Path):
         # Transpose to (slice, height, width)
         label_data = np.transpose(label_data, (2, 0, 1))
 
-        # شناسایی ارگان‌های موجود در segmentation
+        # Identify unique organs in the segmentation
         unique_labels = np.unique(label_data).astype(int)
-        unique_labels = unique_labels[unique_labels > 0]  # حذف background (0)
+        # Remove background (0)
+        unique_labels = unique_labels[unique_labels > 0]
 
         for organ_index in unique_labels:
             try:
                 organ_name = AppConfig.ALL_ORGANS[organ_index]
             except IndexError:
-                logging.warning(f"Organ index {organ_index} خارج از محدوده‌ی لیست ارگان‌هاست.")
+                logging.warning(
+                    f"Organ index {organ_index} is out of bounds for the ALL_ORGANS list.")
                 continue
 
             patient_organ_dir = output_dir / patient_id / organ_name
             patient_organ_dir.mkdir(parents=True, exist_ok=True)
 
             for i, slice_label in enumerate(label_data):
-                binary_mask = (slice_label == organ_index).astype(np.uint8) * 255
+                binary_mask = (slice_label ==
+                               organ_index).astype(np.uint8) * 255
                 mask_path = patient_organ_dir / f"slice_{i:03d}_OUT.png"
                 cv2.imwrite(str(mask_path), binary_mask)
 

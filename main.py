@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from api_service.api import endpoints
-from configs.app_config import AppConfig  
+from configs.app_config import AppConfig
 
 app = FastAPI(
     title="Medical AI Segmentation API",
@@ -9,8 +9,6 @@ app = FastAPI(
     version="1.0.0"
 )
 
-MASKS_DIR = "/media/external20/mehran_advand/segmentation_gradio/temp"  
-
-app.mount("/static-masks", StaticFiles(directory=MASKS_DIR), name="static-masks")
+AppConfig.setup_directories()
 
 app.include_router(endpoints.router)
